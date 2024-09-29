@@ -132,7 +132,7 @@ class TorchCoxMulti(BaseEstimator):
         optimizer.step(closure)
 
         self.beta = beta
-        print("Estimated coefficients:", self.beta.detach().numpy())
+        #print("Estimated coefficients:", self.beta.detach().numpy())
 
         # Compute baseline hazard if required
         if basehaz:
