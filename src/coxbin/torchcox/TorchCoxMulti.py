@@ -103,7 +103,7 @@ class TorchCoxMulti(BaseEstimator):
         """Compute the combined loss function."""
         cox_loss = self.get_cox_loss(tensor, event_tens, num_tied, beta)
         logistic_loss = self.get_logistic_loss(logistic_X, logistic_y, beta)
-        loss = self.alpha * cox_loss + (1 - self.alpha) * logistic_loss
+        loss = (1 - self.alpha) * cox_loss + self.alpha * logistic_loss
         return loss
 
     def fit(self, df, Xnames=None, tname=None, dname=None, basehaz=True):
@@ -159,3 +159,25 @@ class TorchCoxMulti(BaseEstimator):
         S = np.exp(-np.exp(np.dot(testdf[Xnames].values, betas)) * H0)
         S = np.clip(S, 0, 1)
         return S
+
+    def predict_partial_hazard(self, df):
+        """Compute the partial hazard for the Cox model."""
+        X = torch.from_numpy(df[self.Xnames].values).float()
+        beta = self.beta.detach()
+        risk_scores = torch.exp(X @ beta).numpy()
+        return risk_scores
+    
+    def compute_loss(self, df):
+        """Compute the combined loss on new data."""
+        # Preprocess the data
+        incident_df, logistic_df, logistic_y = self.preprocess_data(df)
+
+        # Compute Cox components
+        tensor, event_tens, num_tied = self.compute_cox_components(incident_df)
+
+        # Compute Logistic components
+        logistic_X, logistic_y = self.compute_logistic_components(logistic_df, logistic_y)
+
+        # Compute the combined loss
+        loss = self.get_loss(tensor, event_tens, num_tied, logistic_X, logistic_y, self.beta)
+        return loss.item()
