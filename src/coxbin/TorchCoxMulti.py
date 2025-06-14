@@ -13,6 +13,9 @@ class TorchCoxMulti(BaseEstimator):
 
     def __init__(self, lr=1, alpha=0.5, random_state=None):
         self.random_state = random_state
+        if random_state is not None:
+            torch.manual_seed(random_state)
+            np.random.seed(random_state)
         self.lr = lr
         self.alpha = alpha  # Balance between Cox loss and logistic loss
 
@@ -181,3 +184,4 @@ class TorchCoxMulti(BaseEstimator):
         # Compute the combined loss
         loss = self.get_loss(tensor, event_tens, num_tied, logistic_X, logistic_y, self.beta)
         return loss.item()
+
