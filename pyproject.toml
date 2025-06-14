@@ -91,7 +91,6 @@ dependencies = [
     "referencing==0.35.1",
     "requests==2.32.3",
     "rpds-py==0.20.0",
-    "rpy2==3.5.16",
     "scikit-learn==1.5.2",
     "scipy==1.14.1",
     "six==1.16.0",
@@ -129,3 +128,5 @@ dev = [
     "ruff>=0.11.13",
 ]
 
+[project.optional-dependencies]
+r = ["rpy2>=3.5.16"]
