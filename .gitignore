@@ -1,0 +1,16 @@
+# Build artifacts
+src/coxbin/build/
+src/coxbin/dist/
+src/coxbin/torchcox.egg-info/
+
+# Virtual‐envs & tool caches
+src/.coxbin_env/
+.surv_left_mt/
+.python-version      # optional—if you prefer not to pin via this file
+
+# Bytecode
+**/__pycache__/
+**/*.py[cod]
+
+# Lockfiles?
+# uv.lock   
