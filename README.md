@@ -14,7 +14,11 @@ Install using pip:
 
 Usage example found in `notebooks/Torch_Cox_package_test.ipynb`
 
-Run `pytest` to perform a unit test comparing the numerical fit value against a closed-form, analytical solution of a (Maximum Likelihood Estimation) fit of a Cox model, checking that the numerical fit matches the closed-form solution **to 5 decimal places** to ensure all is well and results are scientifically valid.
+## Running Tests
+
+Execute `uv run python -m pytest` from the repository root to run the unit test suite.
+
+Run `uv run python -m pytest` to perform a unit test comparing the numerical fit value against a closed-form, analytical solution of a (Maximum Likelihood Estimation) fit of a Cox model, checking that the numerical fit matches the closed-form solution **to 5 decimal places** to ensure all is well and results are scientifically valid.
 
 The CI (Continuous Integration) badge just above shows whether this package both compiles correctly and matches the closed-form solution. If its value is 'passing', all is well and you can trust this version.  
 
@@ -40,7 +44,7 @@ The way this was done was using what, for the sake of having a name to refer to 
 
 The regression coefficients of this code have been validated against a closed-form solution on a simple synthetic dataset, and against the [R survival package](https://stat.ethz.ch/R-manual/R-devel/library/survival/html/00Index.html) which is a standard tool of the trade.  
 
-The resulting unit test is in the `tests/test_TorchCox.py` file, which the user can run anytime by runing `pytest` from bash from within the package directory. This unit test is also run automatically as part of the Continuous Integration anytime I push changes to this GitHub repository, resulting in the 'CI passing' badge above, which indicates the package both installs properly (with Python 3.8) and also the comparison against the closed-form result matches to 5 decimal places.
+The resulting unit test is in the `tests/test_TorchCox.py` file, which the user can run anytime by executing `uv run python -m pytest` from within the package directory. This unit test is also run automatically as part of the Continuous Integration anytime I push changes to this GitHub repository, resulting in the 'CI passing' badge above, which indicates the package both installs properly (with Python 3.8) and also the comparison against the closed-form result matches to 5 decimal places.
 
 
 
