@@ -22,6 +22,9 @@ class TorchCoxMulti(BaseEstimator):
         dname="event",
     ):
         self.random_state = random_state
+        if random_state is not None:
+            torch.manual_seed(random_state)
+            np.random.seed(random_state)
         self.lr = lr
         self.alpha = alpha  # Balance between Cox loss and logistic loss
         self.Xnames = Xnames
