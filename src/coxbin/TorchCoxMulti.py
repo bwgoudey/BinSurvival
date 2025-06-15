@@ -235,4 +235,3 @@ class TorchCoxMulti(BaseEstimator):
             tensor, event_tens, num_tied, logistic_X, logistic_y, self.beta
         )
         return loss.item()
-
