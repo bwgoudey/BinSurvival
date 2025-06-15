@@ -125,29 +125,60 @@ class TorchCoxMulti(BaseEstimator):
         loss = (1 - self.alpha) * cox_loss + self.alpha * logistic_loss
         return loss
 
-    def fit(self, X, y, basehaz=True):
-        """Fit the model using (X, y) style arguments."""
+    def fit(
+        self,
+        X,
+        y=None,
+        basehaz=True,
+        *,
+        Xnames=None,
+        tname=None,
+        dname=None,
+    ):
+        """Fit the model.
 
-        if isinstance(X, pd.DataFrame):
+        This method supports two calling conventions: ``fit(X, y)`` similar to
+        scikit-learn estimators, or ``fit(df, Xnames=..., tname=..., dname=...)``
+        where ``df`` contains the covariates and survival columns.
+        """
+
+        if Xnames is not None:
+            self.Xnames = list(Xnames)
+        if tname is not None:
+            self.tname = tname
+        if dname is not None:
+            self.dname = dname
+
+        if y is None:
+            if not isinstance(X, pd.DataFrame):
+                raise ValueError("Single argument fit requires a DataFrame input")
+            df = X.reset_index(drop=True)
             if self.Xnames is None:
-                self.Xnames = list(X.columns)
-            X_df = X.reset_index(drop=True)
+                raise ValueError("Xnames must be provided")
+            missing = {self.tname, self.dname}.difference(df.columns)
+            if missing:
+                raise ValueError(f"DataFrame is missing columns {missing}")
         else:
-            if self.Xnames is None:
-                raise ValueError("Xnames must be provided when X is not a DataFrame")
-            X_df = pd.DataFrame(X, columns=self.Xnames)
+            if isinstance(X, pd.DataFrame):
+                if self.Xnames is None:
+                    self.Xnames = list(X.columns)
+                X_df = X.reset_index(drop=True)
+            else:
+                if self.Xnames is None:
+                    raise ValueError("Xnames must be provided when X is not a DataFrame")
+                X_df = pd.DataFrame(X, columns=self.Xnames)
 
-        if isinstance(y, pd.DataFrame):
-            t = y[self.tname].reset_index(drop=True)
-            d = y[self.dname].reset_index(drop=True)
-        else:
-            t = pd.Series(y[:, 0])
-            d = pd.Series(y[:, 1])
+            if isinstance(y, pd.DataFrame):
+                t = y[self.tname].reset_index(drop=True)
+                d = y[self.dname].reset_index(drop=True)
+            else:
+                t = pd.Series(y[:, 0])
+                d = pd.Series(y[:, 1])
 
-        df = pd.concat(
-            [t.rename(self.tname), d.rename(self.dname), X_df.reset_index(drop=True)],
-            axis=1,
-        )
+            df = pd.concat(
+                [t.rename(self.tname), d.rename(self.dname), X_df.reset_index(drop=True)],
+                axis=1,
+            )
 
         beta = nn.Parameter(torch.zeros(len(self.Xnames))).float()
         optimizer = optim.LBFGS([beta], lr=self.lr)
