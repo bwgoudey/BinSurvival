@@ -114,6 +114,7 @@ dependencies = [
     "webencodings==0.5.1",
     "wrapt==1.16.0",
     "yarg==0.1.9",
+    "SurvivalEVAL>=0.4.1",
 ]
 
 [build-system]
